@@ -26,3 +26,39 @@ exports.login = (login, password) => {
         })
     })
 }
+
+exports.register = (login, password) => {
+    return new Promise((resolve, reject) => {
+        db.collection('users').findOne({
+            login: login
+        }, (err, data) => {
+            if (err) {
+                reject(err)
+                return
+            }
+            if (data != null) {
+                reject('Please change login(it is busy now)')
+                return
+            }
+
+            db.collection('users').insert({
+                login: login,
+                password: password
+            }, (err, data) => {
+                if (err) {
+                    reject(err)
+                    return
+                }
+                if (data.result) {
+                    if (data.result.n != 0) {
+                        resolve(data)
+                    } else {
+                        reject('Error occured, we are working on it')
+                    }
+                } else {
+                    reject('Error occured, please try a few years later')
+                }
+            })
+        })
+    })
+}

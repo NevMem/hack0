@@ -39,7 +39,25 @@ db.connect(dbUrl)
             })
         })
         .catch(err => {
-            res.send(err)
+            res.send({
+                err: err
+            })
+        })
+    })
+
+    app.post('/register', (req, res) => {
+        let login = req.body.login, 
+            password = req.body.password
+        db.register(login, password)
+        .then(data => {
+            res.send({
+                token: utils.createToken(login, password)
+            })
+        })
+        .catch(err => {
+            res.send({
+                err: err
+            })
         })
     })
 
