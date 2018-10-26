@@ -1,5 +1,6 @@
 let MongoClient = require('mongodb').MongoClient
 let db = undefined
+const utils = require('./utils')
 
 exports.connect = (dbUrl) => {
     return MongoClient.connect(dbUrl, { useNewUrlParser: true })
@@ -60,5 +61,59 @@ exports.register = (login, password) => {
                 }
             })
         })
+    })
+}
+
+function getCountOfRoomsByUser(login) {
+    return new Promise((resolve, reject) => {
+        db.collection('rooms').find({
+            login: login
+        }).toArray((err, data) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(data.length)
+            }
+        })
+    })
+}
+
+exports.init_room = (token, roomName) => {
+    return new Promise((resolve, reject) => {
+        let decoded = utils.decodeToken(token)
+        if (!decoded) {
+            reject({
+                err: 'Invalid token'
+            })
+        } else {
+            let login = decoded.login
+            if (!login) {
+                reject({
+                    err: 'Login is empty, please relogin'
+                })
+            } else {
+                getCountOfRoomsByUser(login)
+                .then(count => {
+                    console.log(count)
+                    if (!roomName)
+                        roomName = 'Room ' + (count + 1)
+                    db.collection('rooms')
+                    .insertOne({
+                        name: roomName,
+                        login: login
+                    }, (err, data) => {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            if (data.insertedCount != 1) {
+                                reject('Error occured and room wasn\'t created, we are working on it')
+                            } else {
+                                resolve('Room was successfully created')
+                            }
+                        }
+                    })
+                })
+            }
+        }
     })
 }

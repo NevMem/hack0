@@ -61,6 +61,27 @@ db.connect(dbUrl)
         })
     })
 
+    app.post('/initiate_room', (req, res) => {
+        let token = req.body.token
+        if (!token) {
+            res.send({
+                err: 'Token not found, please login'
+            })
+            return
+        }
+        db.init_room(token)
+        .then(data => {
+            console.log(data)
+            res.send(data)
+        })
+        .catch(err => {
+            console.log(err)
+            res.send({
+                err: err
+            })
+        })
+    })
+
     server.listen(process.env.port, (err) => {
         if (err) {
             console.log(('Error ' + err).red)
