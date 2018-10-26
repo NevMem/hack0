@@ -5,10 +5,24 @@ exports.connect = (dbUrl) => {
     return MongoClient.connect(dbUrl, { useNewUrlParser: true })
     .then(data => {
         console.log('Connected'.green)
-        console.log(data)
+        db = data.db('hackaton')
     })
     .catch(err => {
         console.log('Error'.red)
-        console.log(err)
+    })
+}
+
+exports.login = (login, password) => {
+    return new Promise((resolve, reject) => {
+        db.collection('users').findOne({
+            login: login,
+            password: password
+        }, (err, data) => {
+            console.log(err, data)
+            if (data == null)
+                reject('user not found')
+            if (err) reject(err)
+            else resolve(data)
+        })
     })
 }

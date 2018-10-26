@@ -2,6 +2,7 @@ let express = require('express')
 let http = require('http')
 let bParser = require('body-parser')
 let db = require('./db')
+let utils = require('./utils')
 require('colors')
 require('dotenv').config()
 
@@ -21,10 +22,25 @@ db.connect(dbUrl)
     })
 
     app.use(bParser.json())
-    app.use(bParser.urlencoded({extended: false}))
+    app.use(bParser.urlencoded({extended: true}))
 
     app.get('/', (req, res) => {
         res.send('not implemented yet')
+    })
+
+    app.post('/login', (req, res) => {
+        let login = req.body.login,
+            password = req.body.password
+
+        db.login(login, password)
+        .then(data => {
+            res.send({
+                token: utils.createToken(login, password)
+            })
+        })
+        .catch(err => {
+            res.send(err)
+        })
     })
 
     server.listen(process.env.port, (err) => {
