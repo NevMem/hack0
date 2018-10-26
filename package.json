@@ -8,5 +8,10 @@
     "start": "node server.js"
   },
   "author": "nevmem",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.3.0"
+  }
 }
