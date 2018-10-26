@@ -6,3 +6,8 @@ exports.createToken = (login, password) => {
     console.log(token)
     return token
 }
+
+exports.decodeToken = (token) => {
+    let decoded = jwt.verify(token, process.env.jwt_secret)
+    return decoded
+}
