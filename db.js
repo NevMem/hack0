@@ -348,6 +348,8 @@ exports.getname = (pin) => {
 
 exports.rename = (token, pin, newname) => {
     return new Promise((resolve, reject) => {
-        
+        if (!token) {
+            reject('Token is empty')
+        }
     })
 }
