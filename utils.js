@@ -12,7 +12,7 @@ exports.decodeToken = (token) => {
 }
 
 let sampleSymbol = () => {
-    let now = Math.random() * (26 + 10) | 0
+    let now = Math.random() * (10) | 0
     if (now < 10)
         return String.fromCharCode('0'.charCodeAt(0) + now)
     if (now < 36)
