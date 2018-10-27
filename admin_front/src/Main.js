@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import openSocket from 'socket.io-client'
 import axios from 'axios'
+import defaultAvatar from './default_avatar.svg'
 
 export default class App extends Component {
   constructor(prps) {
@@ -13,10 +14,16 @@ export default class App extends Component {
       online: false,
       token: token,
       form_login: '',
-      form_password: ''
+      form_password: '', 
+      rooms: [], 
+      roomsReady: false
     }
     this.state.socket.on('connect', () => {
       console.log('Connected')
+      if (this.state.token)
+        this.state.socket.emit('owned', {
+          token: this.state.token
+        })
       this.setState({
         online: true,
       })
@@ -34,10 +41,24 @@ export default class App extends Component {
     })
     this.state.socket.on('logged_in', (data) => {
       let token = data.token
+      this.state.socket.emit('owned', {
+        token: this.state.token
+      })
       this.setState({
         token: token
       })
       window.localStorage.setItem('token', token)
+    })
+    this.state.socket.on('login', data => {
+      this.setState({
+        login: data.login
+      })
+    })
+    this.state.socket.on('owned', data => {
+      this.setState({
+        roomsReady: true,
+        rooms: data
+      })
     })
   }
 
@@ -70,7 +91,46 @@ export default class App extends Component {
           <h1>Administration panel</h1>
         </header>
         {this.state.token ? (
-          <div>You are loggined</div>
+          <main>
+            <div className = 'profile'>
+              <div className = 'overwrapper'>
+                <div className = 'profileImagePadder'>
+                  <img className = 'profileImage' src = {this.state.profileImage ? this.state.profileImage : defaultAvatar} />
+                </div>
+              </div>
+              <div className = 'profileWrapper'>
+                <div className = 'login'>{this.state.login ? this.state.login : 'Loading...'}</div>
+                <div>Amount of rooms: {this.state.roomsReady ? this.state.rooms.length : 'Loading...'}</div>
+              </div>
+            </div>
+            <div className = 'content'>
+              <div className = 'dashboard'></div>
+              <div className = 'rooms'>
+                {this.state.rooms.map((el, index) => {
+                  console.log(el)
+                  let currentLoad = ''
+                  if (el.queue && el.queue.length !== 0)
+                    currentLoad = el.queue.length
+                  let loadClass = 'low-load'
+                  if (el.queue && el.queue.length >= 5)
+                    loadClass = 'middle-load'
+                  if (el.queue && el.queue.length >= 10)
+                    loadClass = 'high-load'
+
+                  let roomClasses = 'roomCard ' + loadClass
+                  
+                  return (
+                    <div key = {index} className = {roomClasses}>
+                      <div className = 'roomName'>{el.name}</div>
+                      <div className = 'roomInfo'>
+                        <div className = 'roomLoad'>{currentLoad}</div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </main>
         ) : (
           <div className="advertising">
             <div className = 'advert'>

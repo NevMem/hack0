@@ -55,6 +55,28 @@ db.connect(dbUrl)
                 })
             })
         })
+        socket.on('owned', data => {
+            let token = data.token
+            if (!token) {
+                socket.emit('error', {
+                    err: 'Token is empty'
+                })
+                return
+            }
+            db.getOwnedRooms(token)
+            .then(data => {
+                let decoded = utils.decodeToken(token)
+                socket.emit('login', {
+                    login: decoded.login
+                })
+                socket.emit('owned', data)
+            })
+            .catch(err => {
+                socket.emit('error', {
+                    err: err
+                })
+            })
+        })
     })
 
     app.use((req, res, next) => {
