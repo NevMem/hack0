@@ -130,8 +130,14 @@ exports.getOwnedRooms = (token) => {
                 let login = decoded.login
                 db.collection('rooms').find({
                     login: login
+                }, { 
+                    projection: {
+                        'name': 1,
+                        'pin': 1
+                    }
                 }).toArray((err, data) => {
                     if (err) {
+                        console.log(err)
                         reject('Error occured')
                     } else {
                         resolve(data)
