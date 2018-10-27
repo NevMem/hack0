@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-exports.createToken = (login, password) => {
-    let token = jwt.sign({login: login}, process.env.jwt_secret)
+exports.createToken = (login, password, type) => {
+    let token = jwt.sign({login: login, type: type}, process.env.jwt_secret)
     return token
 }
 
@@ -18,6 +18,22 @@ let sampleSymbol = () => {
     if (now < 36)
         return String.fromCharCode('A'.charCodeAt(0) + now - 10)
     return '$'
+}
+
+exports.createGuest = () => {
+    let login = 'guest_', password = ''
+    console.log(process.env.guest_login_length, process.env.quest_password_length)
+    for (let i = 0; i != process.env.guest_login_length; ++i) {
+        login += sampleSymbol()
+    }
+    for (let i = 0; i != process.env.quest_password_length; ++i) {
+        password += sampleSymbol()
+    }
+    return {
+        login: login,
+        password: password
+    }
+    
 }
 
 exports.generateRoomPin = () => {
