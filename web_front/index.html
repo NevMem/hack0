@@ -10,7 +10,7 @@
 			id="inp" 
 			class="room" 
 			placeholder="Queue PIN" 
-			type="" 
+			type="tel" 
 			shake="" 
 			data-functional-selector="" 
 			aria-label="" />          
@@ -31,7 +31,7 @@
 	</script>
 
     <script>
-      (function () {
+      var token = (() => {
         var output = document.getElementById('output');
         document.getElementById('but').onclick = function (event) {
 					event.preventDefault()
@@ -47,6 +47,24 @@
             });
         };
       })();
+
+      window.localStorage.setItem('user_token', token);
+
+      function getqid(href) {
+      	var l = document.createElement("a");
+      	l.href = href;
+      	var str = l.search;
+      	var ret = "";
+      	for (var i = str.length - 1; str[i] != '=' && i >= 0; --i) {
+      		ret += str[i];
+      	}
+      	if (ret.length == 0) {
+      		console.log("Error! ret is empty!");
+      	}
+      	return ret.split("").reverse().join(""); 
+      }
+
+  	  console.log(getqid(document.URL));
     </script>
 </body>
 </html>

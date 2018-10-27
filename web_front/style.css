@@ -10,21 +10,32 @@ body {
 }
 
 input {
-	cursor: text;
-	width: 480px;
-	font: 400 24px Arial;
-	text-align: center;
+	box-shadow: none;
+
+	font-family: montserrat,"helvetica neue",helvetica,arial,sans-serif;
+	font-weight: 700;
+}
+
+input:focus {
+	outline-offset: -2px;
 }
 
 input.room {
-	font.size: 20px;
+	border: .125rem solid #ccc;
+	border-radius: 0;
+	-webkit-appearance: none;
+
 	height: 50px;
 	line-height: 50px;
 	color: #333;
 	text-align: center;
+
+	font.size: 20px;
+
+	box-sizing: border-box;
 }
 
-input.room.focus {
+input.room:focus {
 	box-shadow: none;
 	border: .125rem solid #333;
 }
