@@ -229,6 +229,23 @@ db.connect(dbUrl)
         })
     })
 
+    app.post('/rename', (req, res) => {
+        let token = req.body.token,
+            pin = req.body.pin,
+            newname = req.body.name
+        db.rename(token, pin, newname)
+        .then(data => {
+            res.send({
+                name: data
+            })
+        })
+        .catch(err => {
+            res.send({
+                err: err
+            })
+        })
+    })
+
     server.listen(process.env.port, (err) => {
         if (err) {
             console.log(('Error ' + err).red)

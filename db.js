@@ -350,6 +350,31 @@ exports.rename = (token, pin, newname) => {
     return new Promise((resolve, reject) => {
         if (!token) {
             reject('Token is empty')
+            return
         }
+        if (!pin) {
+            reject('Pin is empty')
+            return
+        }
+        db.collection('rooms')
+        .updateOne({
+            pin: pin
+        }, {
+            $set: {
+                name: newname
+            }
+        }, (err, data) => {
+            if (err) {
+                console.log(err)
+                reject('Error coccured')
+                return
+            }
+            console.log(data.result)
+            if (data.result && data.result.n === 1) {
+                resolve(newname)
+            } else {
+                reject('Room not found')
+            }
+        })
     })
 }
