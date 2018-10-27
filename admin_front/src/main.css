@@ -39,7 +39,6 @@ footer {
     display: grid;
     grid-template-columns: 5fr 4fr;
     grid-gap: 20px;
-    /* min-height: calc(100vh - 70px - 80px - 20px); */
 }
 
 .advertising div {
@@ -177,6 +176,7 @@ main {
 .content {
     display: grid;
     grid-template-rows: 270px min-content;
+    grid-row-gap: 20px;
 }
 
 .rooms {
@@ -217,4 +217,12 @@ main {
     text-align: center;
     font-size: 30px;
     line-height: 60px;
+}
+
+.circle {
+    background-color: white;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 3px solid #7678ED;
 }

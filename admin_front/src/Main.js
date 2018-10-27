@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import openSocket from 'socket.io-client'
 import axios from 'axios'
 import defaultAvatar from './default_avatar.svg'
+import GoogleMap from 'google-map-react'
 
 export default class App extends Component {
   constructor(prps) {
@@ -63,7 +64,6 @@ export default class App extends Component {
   }
 
   login() {
-    console.log(this.state.form_login, this.state.form_password)
     if (this.state.online) {
       this.state.socket.emit('login', {
         login: this.state.form_login,
@@ -104,10 +104,22 @@ export default class App extends Component {
               </div>
             </div>
             <div className = 'content'>
-              <div className = 'dashboard'></div>
+              <div className = 'dashboard'>
+                <GoogleMap
+                  bootstrapURLKeys={{ key: 'AIzaSyAAEx-l-cLNXot0HlsyNoCg7Z4kyCGLfdw' }}
+                  defaultCenter={
+                    {
+                      lat: 59.95,
+                      lng: 30.33
+                    }
+                  }
+                  defaultZoom={11}
+                >
+                  <div className = 'circle' lat={59.955413} lng={30.337844}></div>
+                </GoogleMap>
+              </div>
               <div className = 'rooms'>
                 {this.state.rooms.map((el, index) => {
-                  console.log(el)
                   let currentLoad = ''
                   if (el.queue && el.queue.length !== 0)
                     currentLoad = el.queue.length
