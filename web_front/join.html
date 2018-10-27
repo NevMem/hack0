@@ -1,0 +1,142 @@
+<html lang = "en">
+<head>  
+    <title>Присоединиться?</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrapper" id = 'anchor'>
+    
+  </div>
+
+  <script type="text/javascript" src = 'http://192.168.43.45/socket.io/socket.io.js'></script>
+  <script type="text/javascript" src = 'eventer.js'></script>
+  <script 
+  type="text/javascript" 
+  src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js">
+  </script>
+
+    <script>
+      const BACKEND_IP = "http://192.168.43.45";
+      const HEADERS = {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      }
+
+      let token = undefined
+      let qpin = undefined
+      let eventLoop = undefined
+      let connection = undefined
+
+      let join_form = document.createElement('form')
+      let join_input = document.createElement('input')
+      join_input.id = 'inp'
+      join_input.placeholder = 'Queue PIN'
+      join_input.classList.add('room')
+      let join_btn = document.createElement('button')
+      join_btn.id = 'but'
+      join_btn.innerHTML = 'Join'
+      join_form.appendChild(join_input)
+      join_form.appendChild(join_btn)
+
+      join_btn.onclick = (event) => {
+        event.preventDefault()
+        tryjoin(join_input.value)
+      }
+
+      function tryjoin(pin, onpageloaded = false) {
+        axios.post(BACKEND_IP + '/join', {
+          pin: pin,
+          token: token
+        }, HEADERS)
+        .then(data => data.data)
+        .then(function (res) {
+          qpin = pin
+          if (res.err && !onpageloaded) {
+            alert(res.err)
+          }
+          token = res.token
+          document.getElementById('anchor')
+          .appendChild(join_form)
+          eventLoop.emit('joined')
+        })
+        .catch(function (err) {
+          alert(err.err);
+          console.log(err);
+        });
+      }
+
+      function getqid(href) {
+        var l = document.createElement("a");
+        l.href = href;
+        var str = l.search;
+        var ret = "";
+        for (var i = str.length - 1; str[i] != '=' && i >= 0; --i) {
+          ret += str[i];
+        }
+        if (ret.length == 0) {
+          console.log("Error! ret is empty!");
+        }
+        return ret.split("").reverse().join(""); 
+      }
+
+      window.onload = () => {  
+        if (window.localStorage.getItem('user_token')) {
+          token = window.localStorage.getItem('user_token')
+        }
+
+        eventLoop = new EventEmitter()
+        let current_pin = getqid(document.URL)
+
+        eventLoop.on('joined', () => {
+          console.log('in eventLoop')
+          if (token) {
+            window.localStorage.setItem('user_token', token)
+            join_form.classList.add('hidden')
+            connection = io(BACKEND_IP)
+            connection.on('connect', () => {
+              connection.emit('myposition', {token: token, pin: qpin})
+            })
+            connection.on('updposition', data => {
+              console.log(data)
+              let showpos_div = document.createElement('div')
+              showpos_div.id = 'showposid'
+              showpos_div.classList.add('pos')
+              let showpos_h1 = document.createElement('h1')
+              showpos_h1.innerHTML = 'Your position'
+              let showpos_h2 = document.createElement('h2')
+              showpos_h2.innerHTML = "[" + data.position + "]" // data.position
+              let showpos_button = document.createElement('button')
+              showpos_button.innerHTML = 'Leave'
+              showpos_button.id = 'butLeave'
+              showpos_button.classList.add('leave')
+              showpos_div.appendChild(showpos_h1)
+              showpos_div.appendChild(showpos_h2)
+              showpos_div.appendChild(showpos_button)
+
+              while (document.getElementById('anchor').children.length !== 0)
+                document.getElementById('anchor').removeChild(
+                  document.getElementById('anchor').firstChild
+                )
+
+              document.getElementById('anchor')
+              .appendChild(showpos_div)
+
+              showpos_button.onclick = (event) => {
+                connection.emit('leave', {token: token, pin: qpin}); 
+              }
+            });
+
+
+          } else {
+            join_form.classList.remove('hidden')
+          }
+        })
+
+        current_pin = getqid(document.URL)
+        if (current_pin) {
+          tryjoin(current_pin, true);
+        }
+      }
+    </script>
+</body>
+</html>

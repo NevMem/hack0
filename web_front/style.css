@@ -1,3 +1,25 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+h1 {
+	font-size: 4em;
+	color: #C6C7C4;
+	text-align: center
+	/*line-height: 1.2*/
+	font-weight: 300;
+	text-transform: uppercase;
+}
+
+h2 {
+	font:140px/normal 'Open Sans';
+	text-align: center;
+	text-shadow: 0 1px 0 #fff;
+	color: #A2999E;
+}
+
+=======
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
+=======
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
 html, body {
 	margin: 0;
 	padding: 0;
@@ -14,6 +36,13 @@ input {
 
 	font-family: montserrat,"helvetica neue",helvetica,arial,sans-serif;
 	font-weight: 700;
+<<<<<<< HEAD
+<<<<<<< HEAD
+	font-size: 4em;
+=======
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
+=======
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
 }
 
 input:focus {
@@ -25,16 +54,88 @@ input.room {
 	border-radius: 0;
 	-webkit-appearance: none;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+/*	height: 50px;
+	line-height: 50px;*/
+	width: 6em;
+	color: #333;
+	text-align: center;
+	padding-bottom: 18px;
+	padding-top: 18px;
+
+=======
+=======
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
 	height: 50px;
 	line-height: 50px;
 	color: #333;
 	text-align: center;
 
 	font.size: 20px;
+<<<<<<< HEAD
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
+=======
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
 
 	box-sizing: border-box;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+input.room::placeholder {
+	color: #D3D5D4;
+}
+
+input.room:focus {
+	box-shadow: none;
+	font.size: 3em;
+	border: .125rem solid #333;
+}
+
+input:focus {
+	outline: none;
+}
+
+button {
+	color: #fff;
+	background-color: #151519;
+	min-width: 100px;
+    /*height: 50px;*/
+    font-weight: 700;
+    font-size: 3em;
+	cursor: pointer;
+	margin-top: 20px;
+	padding-bottom: 8px;
+	padding-top: 8px;
+	transition: all 0.3s;
+	outline: none;
+}
+
+button.leave {
+	font-size: 1em;
+	color: #C6C7C4;
+	background-color: #151519;
+	border-color: #151519;
+}
+
+button:hover {
+	color: #58A4B0;
+}
+
+button:hover:after, button:active:after {
+	width: 100%;
+}
+
+
+/*button {
+	background: none;
+	color: #ccc;
+	width: 240px;
+	height
+=======
+=======
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
 input.room:focus {
 	box-shadow: none;
 	border: .125rem solid #333;
@@ -54,6 +155,10 @@ button {
 
 	margin-top: 20px;
 	cursor: pointer;
+<<<<<<< HEAD
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
+=======
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
 }
 
 button:focus {
@@ -63,9 +168,21 @@ button:focus {
 button:before {
 	content: '';
 	display: block;
+<<<<<<< HEAD
+<<<<<<< HEAD
+}*/
+
+div.wrapper {
+=======
 }
 
 div {
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
+=======
+}
+
+div {
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -77,3 +194,23 @@ form {
 	flex-direction: column;
 	justify-content: space-between;
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+.hidden {
+	display: none;
+}
+
+div.pos {
+	width: 75rem
+	max-width: calc(100% - 3rem)
+	font: inherit;
+	vertical-align: baseline;
+	box-sizing: inherit;
+	display: block;
+	text-align: center;
+}
+=======
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7
+=======
+>>>>>>> f7d09c332ac24a2d7e5bc887a2662829e3a086d7

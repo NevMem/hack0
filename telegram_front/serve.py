@@ -69,6 +69,13 @@ def myposition(data):
     return response
 
 
+def getname(data):
+    url = api_url + "getname"
+    offset_print("Request to " + url + "\n" + str(data), 2)
+    response = requests.post(url, data=data).json()
+    print(requests.post(url, data=data))
+    return response
+
 def main():
     global bot_url
     with open('bot_info.json', 'r') as f:
@@ -77,7 +84,7 @@ def main():
     print(bot_url)
 
 
-    response = (initiate_room(auth({'login' : 'admin', 'password' : 'admin'})))
+    response = ((auth({'login' : 'admin', 'password' : 'admin'})))
     print(response)
 
     tokensdb = dict() # To be replaced with database requests
@@ -88,7 +95,7 @@ def main():
         update = (get_updates_json(bot_url, {'offset' : None}))
         if (len(update) == 0): continue
         update = last_update(update);
-        # print (update_id)
+        print (update_id)
         if (update['update_id'] != update_id):
             uid = get_chat_id(update)
             update_id = update['update_id']
@@ -99,7 +106,7 @@ def main():
                 try:
                     response = join({'pin' : command['args']})
                     if ('token' in response.keys()):
-                        message_text = "Successfully joined room #" + command['args'] + '\nToken:' + response['token']
+                        message_text = "Successfully joined room #" + command['args'] + ' (' + getname({'pin' : command['args']})['name'] + ')\nToken:' + response['token']
                         tokensdb[uid] = response['token']
                         pindb[uid] = command['args']
                     else:
@@ -127,7 +134,7 @@ def main():
                     try:
                         response = leave({'pin' : pindb[uid], 'token' : tokensdb[uid]})
                         if ('err' not in response.keys()):
-                            message_text = "Successfully left room #" + pindb[uid]
+                            message_text = "Successfully left room #" + pindb[uid] + ' (' + getname({'pin' : pindb[uid]})['name'] + ')'
                             pindb.pop(uid)
                         else:
                             message_text = "Failed! an error occured\n" + response['err']
