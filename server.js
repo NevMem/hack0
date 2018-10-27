@@ -97,7 +97,18 @@ db.connect(dbUrl)
     app.post('/join', (req, res) => {
         let token = req.body.token,
             room_pin = req.body.pin
-        console.log(token, room_pin)
+        db.join(token, room_pin)
+        .then(data => {
+            res.send({
+                token: data.token
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.send({
+                err: err
+            })
+        })
     })
 
     server.listen(process.env.port, (err) => {

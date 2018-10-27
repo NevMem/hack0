@@ -1,4 +1,5 @@
 let MongoClient = require('mongodb').MongoClient
+let ObjectID = require('mongodb').ObjectID
 let db = undefined
 const utils = require('./utils')
 
@@ -145,5 +146,54 @@ exports.getOwnedRooms = (token) => {
                 })
             }
         }
+    })
+}
+
+exports.join = (token, pin) => {
+    return new Promise((resolve, reject) => {
+        if (!pin) {
+            reject('Room pin is empty')
+            return
+        }
+        if (!token) {
+            let guest = utils.createGuest()
+            token = utils.createToken(guest.login, guest.password, 'guest')
+        }
+        let login = utils.decodeToken(token).login
+        if (!login) {
+            reject('Token is invalid')
+            return
+        }        
+        db.collection('rooms').findOne({
+            pin: pin
+        }, (err, data) => {
+            if (err) {
+                console.log(err)
+                reject('Error occured, we are working on it')
+            } else {
+                if (!data) {
+                    reject('Room not found')
+                } else {
+                    db.collection('rooms')
+                    .updateOne({ _id: new ObjectID(data._id) },
+                    {
+                        $addToSet: {
+                            queue: [{
+                                login: login
+                            }]
+                        }
+                    }, (err, data) => {
+                        if (err) {
+                            console.log(err)
+                            reject('Error occured')
+                            return
+                        }
+                        resolve({
+                            token: token
+                        })
+                    })
+                }
+            }
+        })
     })
 }
