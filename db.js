@@ -133,8 +133,9 @@ exports.getOwnedRooms = (token) => {
                     login: login
                 }, { 
                     projection: {
-                        'name': 1,
-                        'pin': 1
+                        name: 1,
+                        pin: 1,
+                        queue: 1
                     }
                 }).toArray((err, data) => {
                     if (err) {

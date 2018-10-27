@@ -33,9 +33,10 @@
     <script>
       (function () {
         var output = document.getElementById('output');
-        document.getElementById('but').onclick = function () {
+        document.getElementById('but').onclick = function (event) {
+					event.preventDefault()
           var data = document.getElementById('inp').value;
-          axios.post('/join', {
+          axios.post('join', {
           	pin: data
           })
             .then(function (res) {
