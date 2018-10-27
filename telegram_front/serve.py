@@ -19,7 +19,7 @@ def get_updates_json(request, params = dict()):
 def last_update(data):
     results = data['result']
     total_updates = len(results) - 1
-    if (total_updates == -1): return {'update_id':-1}
+    if (total_updates == -1): return {'update_id':0}
     return results[total_updates]
 
 def get_chat_id(update):
@@ -92,10 +92,10 @@ def main():
     
     update_id = last_update(get_updates_json(bot_url))['update_id']
     while True:
-        update = (get_updates_json(bot_url, {'offset' : None}))
+        update = (get_updates_json(bot_url, {'offset' : update_id}))
         if (len(update) == 0): continue
         update = last_update(update);
-        print (update_id)
+        # print (update_id)
         if (update['update_id'] != update_id):
             uid = get_chat_id(update)
             update_id = update['update_id']
