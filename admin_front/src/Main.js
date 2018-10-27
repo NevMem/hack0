@@ -3,6 +3,8 @@ import openSocket from 'socket.io-client'
 import axios from 'axios'
 import defaultAvatar from './default_avatar.svg'
 import GoogleMap from 'google-map-react'
+import Modal from './Modal.js'
+import { throws } from 'assert';
 
 export default class App extends Component {
   constructor(prps) {
@@ -17,7 +19,9 @@ export default class App extends Component {
       form_login: '',
       form_password: '', 
       rooms: [], 
-      roomsReady: false
+      roomsReady: false,
+      modalVisible: false,
+      currentRoom: -1
     }
     this.state.socket.on('connect', () => {
       console.log('Connected')
@@ -92,9 +96,88 @@ export default class App extends Component {
     window.localStorage.getItem('token', undefined)
   }
 
+  closeModal() {
+    this.setState({
+      modalVisible: false
+    })
+  }
+
+  showModal() {
+    this.setState({
+      modalVisible: true
+    })
+  }
+
+  renderModalHeader() {
+    return (
+      <div className = 'row'>
+        <h2>Queue settings</h2>
+        <div className = 'closeBtn' onClick = {this.closeModal.bind(this)}>close</div>
+      </div>
+    )
+  }
+
+  renderModalContent() {
+    let current = this.state.rooms[this.state.currentRoom]
+    let name = current.name
+    let load = 0
+    if (current.queue)
+      load = current.queue.length
+    let serving = undefined
+    let next = undefined
+    if (current.queue) {
+      if (current.queue.length >= 1)
+        serving = current.queue[0]
+      if (current.queue.length >= 2)
+        next = current.queue[1]
+    }
+    console.log(serving)
+    console.log(next)
+    return (
+      <div className = 'modalContentTwoParts'>
+        <div className = 'queueInfo'>
+          <div>
+            <h2>{name} <span className = 'deleteRoom'>delete</span></h2>
+            <h3>Now in queue: {load}</h3>
+            <br/>
+            <h2>{serving ? serving.login : ''}</h2>
+            <h2>{next ? next.login : ''}</h2>
+          </div>
+          <div className = 'centerit'>
+            <div className = 'btn btn-done'>Done</div>
+          </div>
+        </div>
+        <div>
+          <GoogleMap
+            bootstrapURLKeys={{ key: 'AIzaSyAAEx-l-cLNXot0HlsyNoCg7Z4kyCGLfdw' }}
+            defaultCenter={
+              {
+                lat: 59.95,
+                lng: 30.33
+              }
+            }
+            defaultZoom={11}
+          ></GoogleMap>
+        </div>
+      </div>
+    )
+  }
+
+  roomClicked(index, event) {
+    event.preventDefault()
+    this.setState({
+      currentRoom: index
+    })
+    this.showModal()
+  }
+
   render() {
     return (
       <div className="wrapper">
+        <Modal
+          renderContent = {this.renderModalContent.bind(this)}
+          renderHeader = {this.renderModalHeader.bind(this)}
+          visible = {this.state.modalVisible} />
         <header>
           <h1>Administration panel</h1>
         </header>
@@ -141,7 +224,7 @@ export default class App extends Component {
                   let roomClasses = 'roomCard ' + loadClass
                   
                   return (
-                    <div key = {index} className = {roomClasses}>
+                    <div onClick = {this.roomClicked.bind(this, index)} key = {index} className = {roomClasses}>
                       <div className = 'roomName'>{el.name}</div>
                       <div className = 'roomInfo'>
                         <div className = 'roomLoad'>{currentLoad}</div>

@@ -188,6 +188,9 @@ main {
 .roomCard {
     min-height: 240px;
     background-color: rgb(56, 53, 63);
+    box-shadow: 0px 3px 6px rgb(40, 39, 42);
+
+    cursor: pointer;
 }
 
 .roomName {
@@ -225,4 +228,96 @@ main {
     height: 10px;
     border-radius: 50%;
     border: 3px solid #7678ED;
+}
+
+.logout {
+    color: rgb(69, 69, 251);
+    cursor: pointer;
+}
+
+.blur {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    backdrop-filter: blur(3px);
+    z-index: 3;
+}
+
+.modalWrapper {
+    width: 70vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    display: grid;
+    grid-template-rows: 60px min-content;
+    box-shadow: 3px 6px 6px rgba(17, 17, 17, 0.364);
+}
+
+.modalHeader {
+    line-height: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #04E762;
+    color: black;
+}
+
+.modalHeader h2 {
+    color: black;
+}
+
+.modalContent {
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #38353F;
+}
+
+.closeBtn {
+    cursor: pointer;
+}
+
+.modalContentTwoParts {
+    display: grid;
+    grid-template-columns: 3fr 5fr;
+    min-height: 50vh;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.queueInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.queueInfo h2 {
+    font-size: 30px;
+}
+
+.centerit {
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn-done {
+    max-width: 160px;
+    text-align: center;
+    background-color: #04E762;
+    border-color: #04E762;
+    color: black;
+    transition: all ease-in .2s;
+}
+
+.btn-done:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 0px 6px #04E762;
+}
+
+.deleteRoom {
+    font-size: 16px;
+    cursor: pointer;
+    color: rgb(184, 184, 184);
 }

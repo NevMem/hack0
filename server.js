@@ -19,6 +19,10 @@ db.connect(dbUrl)
     io.on('connect', (socket) => {
         console.log('New socket io connection'.magenta)
         socket.on('myposition', (data) => {
+            if (!data) {
+                socket.emit('error', 'empty data')
+                return
+            }
             let token = data.token,
                 pin = data.pin
             if (!token) {
@@ -78,9 +82,13 @@ db.connect(dbUrl)
             })
         })
     })
+    
+    app.use(bParser.json())
+    app.use(bParser.urlencoded({extended: true}))
 
     app.use((req, res, next) => {
         console.log(`[${req.method}]: ${req.url} ${req.ip}`.cyan)
+        console.log(req.body)
         next()
     })
 
@@ -89,9 +97,6 @@ db.connect(dbUrl)
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
         next()
     })
-
-    app.use(bParser.json())
-    app.use(bParser.urlencoded({extended: true}))
 
     app.get('/', (req, res) => {
         res.send('not implemented yet')

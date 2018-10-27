@@ -369,7 +369,6 @@ exports.rename = (token, pin, newname) => {
                 reject('Error coccured')
                 return
             }
-            console.log(data.result)
             if (data.result && data.result.n === 1) {
                 resolve(newname)
             } else {
