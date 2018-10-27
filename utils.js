@@ -22,7 +22,6 @@ let sampleSymbol = () => {
 
 exports.createGuest = () => {
     let login = 'guest_', password = ''
-    console.log(process.env.guest_login_length, process.env.quest_password_length)
     for (let i = 0; i != process.env.guest_login_length; ++i) {
         login += sampleSymbol()
     }

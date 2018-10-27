@@ -126,6 +126,21 @@ db.connect(dbUrl)
         })
     })
 
+    app.post('/leave', (req, res) => {
+        let token = req.body.token,
+            pin = req.body.pin
+        db.leave(token, pin)
+        .then(data => {
+            console.log(data)
+        })
+        .catch(err => {
+            console.log(err)
+            res.send({
+                err: err
+            })
+        })
+    })
+
     server.listen(process.env.port, (err) => {
         if (err) {
             console.log(('Error ' + err).red)

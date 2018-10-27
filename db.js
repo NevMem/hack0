@@ -267,3 +267,59 @@ exports.getposition = (token, pin) => {
         })
     })
 }
+
+exports.leave = (token, pin) => {
+    return new Promise((resolve, reject) => {
+        if (!token) {
+            reject('Token is empty')
+            return
+        }
+        let decoded = utils.decodeToken(token)
+        if (!decoded) {
+            reject('Invalid token')
+            return
+        }
+        db.collection('rooms')
+        .find({
+            pin: pin
+        }, (err, data) => {
+            if (err) {
+                console.log(err)
+                reject('Error occured')
+                return
+            }
+            if (!data) {
+                reject('Room not found')
+                return
+            }
+            db.collection('rooms')
+            .updateOne({
+                pin: pin
+            }, {
+                $pull: {
+                    queue: {
+                        login: decoded.login
+                    }
+                }
+            }, (err, data) => {
+                if (err) {
+                    console.log(err)
+                    reject('Error occured')
+                    return
+                }
+                if (!data) {
+                    console.log(data)
+                    reject('Error occured')
+                    return
+                }
+                if (data.result.n === 1) {
+                    resolve('You\'ve been successfully removed from this room')
+                    return
+                } else {
+                    resolve('Seems like you wasn\'t signed into this room')
+                    return
+                }
+            })
+        })
+    })
+}
