@@ -1,0 +1,51 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+body {
+	height: 100vh;
+	background: #151519;
+}
+
+input {
+}
+
+button {
+	background: #333;
+	left: 50%;
+	color: #ccc;
+	/*width: 160px;*/
+	height: 40px;
+	border: 1px solid #0;
+	font: 400 14.4px Arial;
+	border-radius: 4px;
+	transition: .6s;
+	overflow: hidden;
+
+	margin-top: 20px;
+	cursor: pointer;
+}
+
+button:focus {
+	outline: none;
+}
+
+button:before {
+	content: '';
+	display: block;
+}
+
+div {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}

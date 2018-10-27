@@ -1,0 +1,51 @@
+<html lang = "en">
+<head>	
+    <title>Присоединиться?</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="wrapper">
+		<form>          
+			<input 
+			id="inp" 
+			class="" 
+			placeholder="Номер комнаты"
+			type="" 
+			shake="" 
+			data-functional-selector="" 
+			aria-label="" />          
+			<button 
+			id="but"
+			type="submit" 
+			class="" 
+			blocking="" 
+			data-functional-selector="">
+			Присоединиться          
+			</button>      
+		</form>
+	</div>
+
+	<script 
+	type="text/javascript" 
+	src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js">
+	</script>
+
+    <script>
+      (function () {
+        var output = document.getElementById('output');
+        document.getElementById('but').onclick = function () {
+          var data = document.getElementById('inp').value;
+          axios.post('/join', {
+          	pin: data
+          })
+            .then(function (res) {
+            	console.log(res);
+            })
+            .catch(function (err) {
+            	console.log(err);
+            });
+        };
+      })();
+    </script>
+</body>
+</html>
