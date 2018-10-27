@@ -28,7 +28,7 @@ def get_chat_id(update):
 
 def send_mess(chat, text, add_args = dict()):
     offset_print("Message to " + str(chat) + "\n------\n" + text, 1)
-    params = {'chat_id': chat, 'text': text}
+    params = {'chat_id': chat, 'text': text, 'parse_mode' : 'html'}
     for i in add_args.keys():
         params[i] = add_args[i]
     response = requests.post(bot_url + 'sendMessage', data=params)
@@ -106,7 +106,7 @@ def main():
                 try:
                     response = join({'pin' : command['args']})
                     if ('token' in response.keys()):
-                        message_text = "Successfully joined room #" + command['args'] + ' (' + getname({'pin' : command['args']})['name'] + ')\nToken:' + response['token']
+                        message_text = "Successfully joined room #" + command['args'] + ' (<b>' + getname({'pin' : command['args']})['name'] + '</b>)' #\nToken:' + response['token']
                         tokensdb[uid] = response['token']
                         pindb[uid] = command['args']
                     else:
@@ -134,7 +134,7 @@ def main():
                     try:
                         response = leave({'pin' : pindb[uid], 'token' : tokensdb[uid]})
                         if ('err' not in response.keys()):
-                            message_text = "Successfully left room #" + pindb[uid] + ' (' + getname({'pin' : pindb[uid]})['name'] + ')'
+                            message_text = "Successfully left room #" + pindb[uid] + ' (<b>' + getname({'pin' : pindb[uid]})['name'] + '</b>)'
                             pindb.pop(uid)
                         else:
                             message_text = "Failed! an error occured\n" + response['err']
