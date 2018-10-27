@@ -16,6 +16,31 @@ let dbUrl = process.env.db_url
 
 db.connect(dbUrl)
 .then(() => {
+    io.on('connect', (socket) => {
+        socket.on('myposition', (data) => {
+            let token = data.token,
+                pin = data.pin
+            if (!token) {
+                socket.emit('error', 'Token is empty')
+                return
+            }
+            if (!pin) {
+                socket.emit('error', 'Pin is empty')
+                return
+            }
+
+            db.getposition(token, pin)
+            .then(data => {
+                console.log(data)
+                socket.emit('updposition', data)
+            })
+            .catch(err => {
+                console.log(err)
+                socket.emit('error', err)
+            })
+        })
+    })
+
     app.use((req, res, next) => {
         console.log(`[${req.method}]: ${req.url} ${req.ip}`.cyan)
         next()
