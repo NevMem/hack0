@@ -117,3 +117,27 @@ exports.init_room = (token, roomName) => {
         }
     })
 }
+
+exports.getOwnedRooms = (token) => {
+    return new Promise((resolve, reject) => {
+        if (!token) {
+            reject('Token is empty')
+        } else {
+            let decoded = utils.decodeToken(token)
+            if (!decoded) {
+                reject('Token is invalid')
+            } else {
+                let login = decoded.login
+                db.collection('rooms').find({
+                    login: login
+                }).toArray((err, data) => {
+                    if (err) {
+                        reject('Error occured')
+                    } else {
+                        resolve(data)
+                    }
+                })
+            }
+        }
+    })
+}

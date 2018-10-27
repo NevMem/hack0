@@ -82,6 +82,19 @@ db.connect(dbUrl)
         })
     })
 
+    app.post('/owned_rooms', (req, res) => {
+        let token = req.body.token
+        db.getOwnedRooms(token)
+        .then(data => {
+            res.send(data)
+        })
+        .catch(err => {
+            res.send({
+                err: err
+            })
+        })
+    })
+
     server.listen(process.env.port, (err) => {
         if (err) {
             console.log(('Error ' + err).red)
