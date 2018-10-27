@@ -111,6 +111,37 @@ db.connect(dbUrl)
         })
     })
 
+    app.post('/myposition', (req, res) => {
+        let token = req.body.token,
+            pin = req.body.pin
+        db.getposition(token, pin)
+        .then(data => {
+            console.log(data)
+            res.send(data)
+        })
+        .catch(err => {
+            res.send({
+                err: err
+            })
+        })
+    })
+
+    app.post('/leave', (req, res) => {
+        let token = req.body.token,
+            pin = req.body.pin
+        db.leave(token, pin)
+        .then(data => {
+            res.send({
+                message: data
+            })
+        })
+        .catch(err => {
+            res.send({
+                err: err
+            })
+        })
+    })
+
     server.listen(process.env.port, (err) => {
         if (err) {
             console.log(('Error ' + err).red)
