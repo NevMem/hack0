@@ -59,6 +59,8 @@ db.connect(dbUrl)
         res.send('not implemented yet')
     })
 
+    app.use('/admin', express.static(__dirname + '/admin_front/dist'))
+
     app.post('/login', (req, res) => {
         let login = req.body.login,
             password = req.body.password

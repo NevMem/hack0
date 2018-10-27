@@ -1,3 +1,5 @@
 node_modules/
 .env
 telegram_front/bot_info.json
+package-lock.json
+admin_front/dist/*
