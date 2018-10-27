@@ -213,6 +213,22 @@ db.connect(dbUrl)
         })
     })
 
+    app.post('/getname', (req, res) => {
+        let pin = req.body.pin
+        db.getname(pin)
+        .then(data => {
+            res.send({
+                name: data
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.send({
+                err: err
+            })
+        })
+    })
+
     server.listen(process.env.port, (err) => {
         if (err) {
             console.log(('Error ' + err).red)

@@ -325,3 +325,29 @@ exports.leave = (token, pin) => {
         })
     })
 }
+
+exports.getname = (pin) => {
+    return new Promise((resolve, reject) => {
+        db.collection('rooms')
+        .findOne({
+            pin: pin
+        }, (err, data) => {
+            if (err) {
+                console.log(err)
+                reject('Error occured')
+                return
+            }
+            if (!data) {
+                reject('Room not found')
+                return
+            }
+            resolve(data.name)
+        })
+    })
+}
+
+exports.rename = (token, pin, newname) => {
+    return new Promise((resolve, reject) => {
+        
+    })
+}
