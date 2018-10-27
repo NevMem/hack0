@@ -178,9 +178,9 @@ exports.join = (token, pin) => {
                     .updateOne({ _id: new ObjectID(data._id) },
                     {
                         $addToSet: {
-                            queue: [{
+                            queue: {
                                 login: login
-                            }]
+                            }
                         }
                     }, (err, data) => {
                         if (err) {
@@ -193,6 +193,53 @@ exports.join = (token, pin) => {
                         })
                     })
                 }
+            }
+        })
+    })
+}
+
+exports.getposition = (token, pin) => {
+    return new Promise((resolve, reject) => {
+        if (!token) {
+            reject('Token is empty')
+            return
+        }
+        let decoded = utils.decodeToken(token)
+        if (!decoded) {
+            reject('Token is invalid')
+            return
+        }
+        db.collection('rooms').findOne({
+            pin: pin
+        }, (err, data) => {
+            if (err) {
+                console.log(err)
+                reject('Error occured, we\'re so sorry...')
+            } else {
+                if (!data.queue) {
+                    resolve({
+                        message: 'This queue is empty',
+                        position: -1
+                    })
+                }
+                for (let i = 0; i < data.queue.length; ++i) {
+                    if (data.queue[i].login === decoded.login) {
+                        let message = undefined
+                        if (i === 0)
+                            message = 'Please come on'
+                        if (i === 1)
+                            message = 'Please be ready, you\'re next'
+                        resolve({
+                            position: i + 1,
+                            message: message
+                        })
+                        return
+                    }
+                }
+                resolve({
+                    message: 'You are not in this queue. If You want please join it.',
+                    position: -1
+                })
             }
         })
     })
