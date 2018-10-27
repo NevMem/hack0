@@ -17,7 +17,7 @@ let dbUrl = process.env.db_url
 db.connect(dbUrl)
 .then(() => {
     app.use((req, res, next) => {
-        console.log(`[${req.method}]: ${req.url}`)
+        console.log(`[${req.method}]: ${req.url} ${req.ip}`.cyan)
         next()
     })
 
@@ -75,9 +75,8 @@ db.connect(dbUrl)
             res.send(data)
         })
         .catch(err => {
-            console.log(err)
             res.send({
-                err: err
+                err: 'Invalid token'
             })
         })
     })
@@ -93,6 +92,12 @@ db.connect(dbUrl)
                 err: err
             })
         })
+    })
+
+    app.post('/join', (req, res) => {
+        let token = req.body.token,
+            room_pin = req.body.pin
+        console.log(token, room_pin)
     })
 
     server.listen(process.env.port, (err) => {

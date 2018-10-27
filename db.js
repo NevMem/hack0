@@ -19,7 +19,6 @@ exports.login = (login, password) => {
             login: login,
             password: password
         }, (err, data) => {
-            console.log(err, data)
             if (data == null)
                 reject('user not found')
             if (err) reject(err)
@@ -94,13 +93,14 @@ exports.init_room = (token, roomName) => {
             } else {
                 getCountOfRoomsByUser(login)
                 .then(count => {
-                    console.log(count)
                     if (!roomName)
                         roomName = 'Room ' + (count + 1)
+                    let pin = utils.generateRoomPin()
                     db.collection('rooms')
                     .insertOne({
                         name: roomName,
-                        login: login
+                        login: login,
+                        pin: pin
                     }, (err, data) => {
                         if (err) {
                             reject(err)
@@ -108,7 +108,7 @@ exports.init_room = (token, roomName) => {
                             if (data.insertedCount != 1) {
                                 reject('Error occured and room wasn\'t created, we are working on it')
                             } else {
-                                resolve('Room was successfully created')
+                                resolve(pin)
                             }
                         }
                     })
