@@ -10,6 +10,23 @@ body {
 }
 
 input {
+	cursor: text;
+	width: 480px;
+	font: 400 24px Arial;
+	text-align: center;
+}
+
+input.room {
+	font.size: 20px;
+	height: 50px;
+	line-height: 50px;
+	color: #333;
+	text-align: center;
+}
+
+input.room.focus {
+	box-shadow: none;
+	border: .125rem solid #333;
 }
 
 button {
@@ -17,9 +34,9 @@ button {
 	left: 50%;
 	color: #ccc;
 	/*width: 160px;*/
-	height: 40px;
+	height: 80px;
 	border: 1px solid #0;
-	font: 400 14.4px Arial;
+	font: 400 48px Arial;
 	border-radius: 4px;
 	transition: .6s;
 	overflow: hidden;
