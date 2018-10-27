@@ -1,0 +1,141 @@
+* {
+    padding: 0 0;
+    margin: 0 0;
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    font-family: InterUI,-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Oxygen,Ubuntu,Cantarell,"Open Sans",sans-serif;;
+    font-weight: 240;
+    color: white;
+}
+
+#app {
+    display: grid;
+    grid-template-columns: 2fr 12fr 2fr;
+    min-height: 100vh;
+}
+
+.wrapper {
+    min-height: 100vh;
+    grid-column: 2;
+    grid-template-rows: 80px auto 200px 70px;
+    grid-gap: 10px;
+    display: grid;
+}
+
+body {
+    background-color: #28262C;
+}
+
+header {
+    background-color: rgb(56, 53, 63);
+    line-height: 80px;
+    padding-left: 10px;
+}
+
+footer {
+    line-height: 70px;
+}
+
+.advertising {
+    display: grid;
+    grid-template-columns: 5fr 4fr;
+    grid-gap: 20px;
+    /* min-height: calc(100vh - 70px - 80px - 20px); */
+}
+
+.advertising div {
+    padding: 20px 20px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    line-height: 40px;
+}
+
+.login-form input {
+    line-height: 30px;
+    font-size: 22px;
+    outline: none;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    color: black;
+    padding: 7px 14px;
+}
+
+.row, .advertising .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 0;
+}
+
+.btn {
+    padding: 14px 40px;
+    border: 1px solid grey;
+    color: grey;
+    border-radius: 4px;
+    font-size: 22px;
+    background-color: transparent;
+    cursor: pointer;
+    min-width: 160px;
+    transition: all ease-in .2s;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+.btn-login {
+    border-color: #04E762;
+    color: #04E762;
+}
+
+.btn-login:hover {
+    color: black;
+    background-color: #04E762;
+}
+
+.btn-register {
+    border-color: #7678ED;
+    color: black;
+    background-color: #7678ED;
+}
+
+.btn-register:hover {
+    color: #7678ED;
+    background-color: transparent;
+}
+
+.login-form {
+    background-color: rgb(45, 42, 49);
+}
+
+.login-form h3 {
+    line-height: 50px;
+    font-size: 34px;
+}
+
+.login-form h4 {
+    color: rgb(172, 172, 172);
+}
+
+.login-form h5 {
+    color: rgb(192, 192, 192);
+    line-height: 28px;
+    font-size: 24px;
+}
+
+.huge {
+    font-size: 72px;
+    font-weight: 350;
+}
+
+.small {
+    color: rgb(206, 206, 206);
+    font-size: 30px;
+}
+
+.why {
+    /* background-color: #7678ED; */
+    color: white;
+}

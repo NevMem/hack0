@@ -17,6 +17,7 @@ let dbUrl = process.env.db_url
 db.connect(dbUrl)
 .then(() => {
     io.on('connect', (socket) => {
+        console.log('New socket io connection'.magenta)
         socket.on('myposition', (data) => {
             let token = data.token,
                 pin = data.pin
@@ -37,6 +38,21 @@ db.connect(dbUrl)
             .catch(err => {
                 console.log(err)
                 socket.emit('error', err)
+            })
+        })
+        socket.on('login', (data) => {
+            let login = data.login,
+                password = data.password
+            db.login(login, password)
+            .then(data => {
+                socket.emit('logged_in', {
+                    token: utils.createToken(login, password)
+                })
+            })
+            .catch(err => {
+                socket.emit('error', {
+                    err: err
+                })
             })
         })
     })
