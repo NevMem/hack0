@@ -30,6 +30,7 @@
       let join_form = document.createElement('form')
       let join_input = document.createElement('input')
       join_input.id = 'inp'
+      join_input.type = 'number'
       join_input.placeholder = 'Queue PIN'
       join_input.classList.add('room')
       let join_btn = document.createElement('button')
@@ -52,15 +53,16 @@
         .then(function (res) {
           qpin = pin
           if (res.err && !onpageloaded) {
-            alert(res.err)
+            alert('1 alert)' + res.err)
           }
-          token = res.token
+          token = res.token 
           document.getElementById('anchor')
           .appendChild(join_form)
+
           eventLoop.emit('joined')
         })
         .catch(function (err) {
-          alert(err.err);
+          alert('2 alert)' + err.err);
           console.log(err);
         });
       }
@@ -74,7 +76,8 @@
           ret += str[i];
         }
         if (ret.length == 0) {
-          console.log("Error! ret is empty!");
+          return undefined;
+          //console.log("Error! ret is empty!");
         }
         return ret.split("").reverse().join(""); 
       }
@@ -104,7 +107,7 @@
               let showpos_h1 = document.createElement('h1')
               showpos_h1.innerHTML = 'Your position'
               let showpos_h2 = document.createElement('h2')
-              showpos_h2.innerHTML = "[" + data.position + "]" // data.position
+              showpos_h2.innerHTML = "[" + (parseInt(data.position) - 1).toString() + "]" // data.position
               let showpos_button = document.createElement('button')
               showpos_button.innerHTML = 'Leave'
               showpos_button.id = 'butLeave'
@@ -113,16 +116,39 @@
               showpos_div.appendChild(showpos_h2)
               showpos_div.appendChild(showpos_button)
 
-              while (document.getElementById('anchor').children.length !== 0)
+              while (document.getElementById('anchor').children.length !== 0) {
                 document.getElementById('anchor').removeChild(
                   document.getElementById('anchor').firstChild
                 )
+              }
 
-              document.getElementById('anchor')
-              .appendChild(showpos_div)
+              document.getElementById('anchor').appendChild(showpos_div)
 
-              showpos_button.onclick = (event) => {
-                connection.emit('leave', {token: token, pin: qpin}); 
+              try {
+                showpos_button.onclick = (event) => {
+                  axios.post(BACKEND_IP + '/leave', {token: token, pin: qpin}, HEADERS); 
+
+                  window.localStorage.removeItem('user_token');
+                  token = undefined;
+                  qpin = undefined;
+
+                  while (document.getElementById('anchor').children.length !== 0) {
+                    document.getElementById('anchor').removeChild(
+                      document.getElementById('anchor').firstChild
+                    )
+                  }
+
+                  join_form.classList.remove('hidden')
+                  document.getElementById('anchor').appendChild(join_form)
+
+                  join_btn.onclick = (event) => {
+                    event.preventDefault()
+                    console.log('Button was clicked after leave')
+                    tryjoin(join_input.value)
+                  }     
+                }
+              } catch (err) {
+                alert('3 alert)' + err);
               }
             });
 
@@ -135,6 +161,13 @@
         current_pin = getqid(document.URL)
         if (current_pin) {
           tryjoin(current_pin, true);
+        } else {
+          document.getElementById('anchor').appendChild(join_form)
+
+          join_btn.onclick = (event) => {
+  	        event.preventDefault()
+  	        tryjoin(join_input.value)
+  	      }       	
         }
       }
     </script>

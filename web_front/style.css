@@ -1,6 +1,9 @@
+body {
+	font-family: InterUI,-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Oxygen,Ubuntu,Cantarell,"Open Sans",sans-serif;
+}
 h1 {
 	font-size: 4em;
-	color: #C6C7C4;
+	color: #A2999E;
 	text-align: center
 	/*line-height: 1.2*/
 	font-weight: 300;
@@ -8,10 +11,10 @@ h1 {
 }
 
 h2 {
-	font:140px/normal 'Open Sans';
+	font-size: 140px;
 	text-align: center;
 	text-shadow: 0 1px 0 #fff;
-	color: #A2999E;
+	color: #C6C7C4;
 }
 
 html, body {
@@ -27,8 +30,6 @@ body {
 
 input {
 	box-shadow: none;
-
-	font-family: montserrat,"helvetica neue",helvetica,arial,sans-serif;
 	font-weight: 700;
 	font-size: 4em;
 }
@@ -41,15 +42,11 @@ input.room {
 	border: .125rem solid #ccc;
 	border-radius: 0;
 	-webkit-appearance: none;
-
-/*	height: 50px;
-	line-height: 50px;*/
 	width: 6em;
 	color: #333;
 	text-align: center;
 	padding-bottom: 18px;
 	padding-top: 18px;
-
 
 	box-sizing: border-box;
 }
@@ -72,7 +69,6 @@ button {
 	color: #fff;
 	background-color: #151519;
 	min-width: 100px;
-    /*height: 50px;*/
     font-weight: 700;
     font-size: 3em;
 	cursor: pointer;
@@ -84,36 +80,21 @@ button {
 }
 
 button.leave {
-	font-size: 1em;
+	font-size: 4em;
+	font-color: #A2999E;
 	color: #C6C7C4;
+
 	background-color: #151519;
-	border-color: #151519;
+	border: none;
 }
 
 button:hover {
-	color: #58A4B0;
+	color: #555B6E;
 }
 
 button:hover:after, button:active:after {
 	width: 100%;
 }
-
-
-/*button {
-	background: none;
-	color: #ccc;
-	width: 240px;
-	height
-}
-
-button:focus {
-	outline: none;
-}
-
-button:before {
-	content: '';
-	display: block;
-}*/
 
 div.wrapper {
 	position: absolute;
