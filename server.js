@@ -72,7 +72,7 @@ db.connect(dbUrl)
         db.init_room(token)
         .then(data => {
             console.log(data)
-            res.send(data)
+            res.send({ pin: data })
         })
         .catch(err => {
             res.send({
