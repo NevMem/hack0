@@ -101,7 +101,8 @@ exports.init_room = (token, roomName) => {
                     .insertOne({
                         name: roomName,
                         login: login,
-                        pin: pin
+                        pin: pin,
+                        unusedId: 1
                     }, (err, data) => {
                         if (err) {
                             reject(err)
@@ -175,12 +176,24 @@ exports.join = (token, pin) => {
                 if (!data) {
                     reject('Room not found')
                 } else {
+                    if (data.queue) {
+                        for (let i = 0; i < data.queue.length; ++i) {
+                            if(data.queue[i].login === login) {
+                                reject('You are already in queue')
+                                return
+                            }
+                        }
+                    }
                     db.collection('rooms')
                     .updateOne({ _id: new ObjectID(data._id) },
                     {
+                        $set: {
+                            unusedId: data.unusedId + 1
+                        },
                         $addToSet: {
                             queue: {
-                                login: login
+                                login: login,
+                                qid: data.unusedId
                             }
                         }
                     }, (err, data) => {
@@ -217,23 +230,32 @@ exports.getposition = (token, pin) => {
                 console.log(err)
                 reject('Error occured, we\'re so sorry...')
             } else {
+                if (!data) {
+                    reject('This queue doesn\'t exists')
+                    return
+                }
+                let response = {
+                    position: -1,
+                    message: undefined
+                }
                 if (!data.queue) {
-                    resolve({
-                        message: 'This queue is empty',
-                        position: -1
-                    })
+                    response.message = 'This queue is empty'
+                    resolve(response)
+                    return
                 }
                 for (let i = 0; i < data.queue.length; ++i) {
                     if (data.queue[i].login === decoded.login) {
-                        let message = undefined
-                        if (i === 0)
-                            message = 'Please come on'
-                        if (i === 1)
-                            message = 'Please be ready, you\'re next'
-                        resolve({
-                            position: i + 1,
-                            message: message
-                        })
+                        if (i === 0) {
+                            response.message = 'Please come on'
+                        } else if (i === 1) {
+                            response.message = 'Please be ready, you\'re next'
+                        } else {
+                            response.serving = data.queue[0].qid
+                            response.next = data.queue[1].qid
+                        }
+                        response.position = i + 1
+                        response.qid = data.queue[i].qid
+                        resolve(response)
                         return
                     }
                 }
