@@ -179,7 +179,9 @@ exports.join = (token, pin) => {
                     if (data.queue) {
                         for (let i = 0; i < data.queue.length; ++i) {
                             if(data.queue[i].login === login) {
-                                reject('You are already in queue')
+                                resolve({
+                                    token: token
+                                })
                                 return
                             }
                         }
