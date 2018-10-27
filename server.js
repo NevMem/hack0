@@ -131,10 +131,11 @@ db.connect(dbUrl)
             pin = req.body.pin
         db.leave(token, pin)
         .then(data => {
-            console.log(data)
+            res.send({
+                message: data
+            })
         })
         .catch(err => {
-            console.log(err)
             res.send({
                 err: err
             })
