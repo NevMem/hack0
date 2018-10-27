@@ -11,7 +11,7 @@ export default class App extends Component {
     if (window.localStorage.getItem('token') !== undefined)
       token = window.localStorage.getItem('token')
     this.state = {
-      socket: openSocket('http://localhost:80'),
+      socket: openSocket('http://172.31.19.207:80'),
       online: false,
       token: token,
       form_login: '',
@@ -43,7 +43,7 @@ export default class App extends Component {
     this.state.socket.on('logged_in', (data) => {
       let token = data.token
       this.state.socket.emit('owned', {
-        token: this.state.token
+        token: token
       })
       this.setState({
         token: token
@@ -84,6 +84,14 @@ export default class App extends Component {
     })
   }
 
+  logout() {
+    console.log('here')
+    this.setState({
+      token: undefined
+    })
+    window.localStorage.getItem('token', undefined)
+  }
+
   render() {
     return (
       <div className="wrapper">
@@ -101,6 +109,7 @@ export default class App extends Component {
               <div className = 'profileWrapper'>
                 <div className = 'login'>{this.state.login ? this.state.login : 'Loading...'}</div>
                 <div>Amount of rooms: {this.state.roomsReady ? this.state.rooms.length : 'Loading...'}</div>
+                <div onClick = {this.logout.bind(this)} className = 'logout'>Logout</div>
               </div>
             </div>
             <div className = 'content'>
