@@ -117,6 +117,25 @@ export default class App extends Component {
     )
   }
 
+  deleteRoom() {
+    if (0 <= this.state.currentRoom && this.state.currentRoom < this.state.rooms.length) {
+      this.closeModal()
+      this.state.socket.emit('remove room', {
+        token: this.state.token,
+        pin: this.state.rooms[this.state.currentRoom].pin
+      })
+    }
+  }
+
+  doneOne() {
+    if (0 <= this.state.currentRoom && this.state.currentRoom < this.state.rooms.length) {
+      this.state.socket.emit('done one', {
+        token: this.state.token,
+        pin: this.state.rooms[this.state.currentRoom].pin
+      })
+    }
+  }
+
   renderModalContent() {
     let current = this.state.rooms[this.state.currentRoom]
     let name = current.name
@@ -131,20 +150,18 @@ export default class App extends Component {
       if (current.queue.length >= 2)
         next = current.queue[1]
     }
-    console.log(serving)
-    console.log(next)
     return (
       <div className = 'modalContentTwoParts'>
         <div className = 'queueInfo'>
           <div>
-            <h2>{name} <span className = 'deleteRoom'>delete</span></h2>
+            <h2>{name} <span onClick = {this.deleteRoom.bind(this)} className = 'deleteRoom'>delete</span></h2>
             <h3>Now in queue: {load}</h3>
             <br/>
-            <h2>{serving ? serving.login : ''}</h2>
-            <h2>{next ? next.login : ''}</h2>
+            <h2>{serving ? 'Serving: ' + serving.login : ''}</h2>
+            <h2>{next ? 'Next: ' + next.login : ''}</h2>
           </div>
           <div className = 'centerit'>
-            <div className = 'btn btn-done'>Done</div>
+            <div className = 'btn btn-done' onClick = {this.doneOne.bind(this)}>Done</div>
           </div>
         </div>
         <div>

@@ -81,6 +81,64 @@ db.connect(dbUrl)
                 })
             })
         })
+        socket.on('remove room', (data) => {
+            if (!data) {
+                socket.emit('error', 'Request is empty')
+                return
+            }
+            let token = data.token,
+                pin = data.pin
+
+            db.remove(token, pin)
+            .then(data => {
+
+                db.getOwnedRooms(token)
+                .then(data => {
+                    let decoded = utils.decodeToken(token)
+                    socket.emit('owned', data)
+                })
+                .catch(err => {
+                    socket.emit('error', {
+                        err: err
+                    })
+                })
+
+            })
+            .catch(err => {
+                res.send({
+                    err: err
+                })
+            })
+        })
+        socket.on('done one', (data) => {
+            if (!data) {
+                socket.emit('error', 'Request is empty')
+                return
+            }
+            let token = data.token,
+                pin = data.pin
+
+            db.doneOne(token, pin)
+            .then(data => {
+
+                db.getOwnedRooms(token)
+                .then(data => {
+                    let decoded = utils.decodeToken(token)
+                    socket.emit('owned', data)
+                })
+                .catch(err => {
+                    socket.emit('error', {
+                        err: err
+                    })
+                })
+
+            })
+            .catch(err => {
+                res.send({
+                    err: err
+                })
+            })
+        })
     })
     
     app.use(bParser.json())
@@ -243,6 +301,21 @@ db.connect(dbUrl)
             res.send({
                 name: data
             })
+        })
+        .catch(err => {
+            res.send({
+                err: err
+            })
+        })
+    })
+
+    app.post('/remove', (req, res) => {
+        let token = req.body.token,
+            pin = req.body.pin
+        db.remove(token, pin)
+        .then(data => {
+            console.log(data)
+            res.send(data)
         })
         .catch(err => {
             res.send({

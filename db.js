@@ -377,3 +377,68 @@ exports.rename = (token, pin, newname) => {
         })
     })
 }
+
+exports.remove = (token, pin) => {
+    return new Promise((resolve, reject) => {
+        if (!token) {
+            reject('Token is empty')
+            return
+        }
+        if (!pin) {
+            reject('Pin is empty')
+            return
+        }
+        let decoded = utils.decodeToken(token)
+        if (!decoded) {
+            reject('Token is invalid')
+            return
+        }
+        db.collection('rooms')
+        .deleteOne({
+            pin: pin,
+            login: decoded.login
+        }, (err, data) => {
+            if (err) {
+                console.log(err)
+                reject('Error occured')
+                return
+            }
+            resolve('ok')
+        })
+    })
+}
+
+exports.doneOne = (token, pin) => {
+    return new Promise((resolve, reject) => {
+        if (!token) {
+            reject('Token is empty')
+            return
+        }
+        if (!pin) {
+            reject('Pin is empty')
+            return
+        }
+        let decoded = utils.decodeToken(token)
+        if (!decoded) {
+            reject('Token is invalid')
+            return
+        }
+        db.collection('rooms')
+        .updateOne({
+            pin: pin,
+            login: decoded.login
+        }, {
+            $pop: {
+                queue: -1
+            }
+        }, (err, data) => {
+            if (err) {
+                console.log(err)
+                reject('Error occured')
+                return
+            }
+            console.log(data)
+            resolve('ok')
+        })
+    })
+}
