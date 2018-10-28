@@ -214,6 +214,7 @@ main {
 
 .roomInfo {
     padding: 10px 20px;
+    min-height: 200px;
 }
 
 .roomLoad {
