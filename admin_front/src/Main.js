@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import openSocket from 'socket.io-client'
 import axios from 'axios'
 import defaultAvatar from './default_avatar.svg'
+import qrImage from './qr.svg'
 import GoogleMap from 'google-map-react'
 import Modal from './Modal.js'
 import { throws } from 'assert';
@@ -32,6 +33,13 @@ export default class App extends Component {
       this.setState({
         online: true,
       })
+    })
+    this.state.socket.on('reload', () => {
+      if (this.state.token) {
+        this.state.socket.emit('owned', {
+          token: this.state.token
+        })
+      }
     })
     this.state.socket.on('reset token', () => {
       this.setState({
@@ -64,6 +72,10 @@ export default class App extends Component {
         roomsReady: true,
         rooms: data
       })
+    })
+    this.state.socket.on('qr image', data => {
+      console.log(data)
+      let win = window.open('http://localhost:80/' + data.filename, '_blank')
     })
   }
 
@@ -136,6 +148,17 @@ export default class App extends Component {
     }
   }
 
+  initQRCration() {
+    if (0 <= this.state.currentRoom && this.state.currentRoom < this.state.rooms.length) {
+      let token = this.state.token, 
+        pin = this.state.rooms[this.state.currentRoom].pin
+      this.state.socket.emit('qr', {
+        token: token,
+        pin: pin
+      })
+    }
+  }
+
   renderModalContent() {
     let current = this.state.rooms[this.state.currentRoom]
     let name = current.name
@@ -162,6 +185,9 @@ export default class App extends Component {
           </div>
           <div className = 'centerit'>
             <div className = 'btn btn-done' onClick = {this.doneOne.bind(this)}>Done</div>
+            <div className = 'qr' onClick = {this.initQRCration.bind(this)}>
+              <img width = '30px' src = {qrImage} />
+            </div>
           </div>
         </div>
         <div>
@@ -186,6 +212,29 @@ export default class App extends Component {
       currentRoom: index
     })
     this.showModal()
+  }
+
+  prettify(value) {
+    value += ''
+    while (value.length < 2)
+      value = '0' + value
+    return value
+  }
+
+  formatDuration(duration) {
+    let seconds = duration % 60
+    duration = duration / 60 | 0
+    let minutes = duration % 60
+    duration = duration / 60 | 0
+    let hours = duration
+    
+    if (hours != 0) {
+      return hours + ':' + this.prettify(minutes) + ':' + this.prettify(seconds)
+    }
+    if (minutes != 0) {
+      return minutes + ':' + this.prettify(seconds)
+    }
+    return seconds + ''
   }
 
   render() {
@@ -239,12 +288,18 @@ export default class App extends Component {
                     loadClass = 'high-load'
 
                   let roomClasses = 'roomCard ' + loadClass
+                  let waiting = undefined
+                  if (el.queue && el.queue[0] && el.queue[0].creationTime) {
+                    waiting = new Date().getTime() - new Date(el.queue[0].creationTime).getTime()
+                    waiting = waiting / 1000 | 0
+                  }
                   
                   return (
                     <div onClick = {this.roomClicked.bind(this, index)} key = {index} className = {roomClasses}>
                       <div className = 'roomName'>{el.name}</div>
                       <div className = 'roomInfo'>
                         <div className = 'roomLoad'>{currentLoad}</div>
+                        <div className = 'maxTime'>{waiting > 0 ? 'Max Time: ' + this.formatDuration(waiting) : ''}</div>
                       </div>
                     </div>
                   )

@@ -3,6 +3,7 @@ let http = require('http')
 let bParser = require('body-parser')
 let db = require('./db')
 let utils = require('./utils')
+let cp = require('child_process')
 require('colors')
 require('dotenv').config()
 
@@ -14,9 +15,23 @@ let dbUrl = process.env.db_url
     .replace('<dbuser>', process.env.db_user)
     .replace('<dbpassword>', process.env.db_password)
 
+let connections = []
+let initiateUpdate = () => {
+    for (let i = 0; i < connections.length; ++i) {
+        connections[i].emit('reload')
+    }
+}
+
+let createQR = (url, pin) => {
+    let child = cp.spawnSync('python', [ 'qr.py', url, pin ])
+    let filename = child.stdout.toString()
+    return filename
+}
+
 db.connect(dbUrl)
 .then(() => {
     io.on('connect', (socket) => {
+        connections.push(socket)
         console.log('New socket io connection'.magenta)
         socket.on('myposition', (data) => {
             if (!data) {
@@ -139,6 +154,34 @@ db.connect(dbUrl)
                 })
             })
         })
+        socket.on('qr', (data) => {
+            console.log(data)
+            if (data && data.token && data.pin) {
+                let token = data.token, 
+                    pin = data.pin
+                let decoded = utils.decodeToken(token)
+                if (!decoded) {
+                    socket.send('error', 'Token is invalid')
+                    return
+                }
+                db.isOwner(token, pin)
+                .then(data => {
+                    if (data.owner) {
+                        let qrImageName = createQR(process.env.url, pin)
+                        socket.emit('qr image', {
+                            filename: qrImageName
+                        })
+                    } else {
+                        socket.emit('error', 'You are not an owner of room')
+                    }
+                })
+                .catch(err => {
+                    socket.emit('error', 'You are not an owner of room')
+                })
+            } else {
+                socket.emit('error', 'Not full data')
+            }
+        })
     })
     
     app.use(bParser.json())
@@ -155,6 +198,8 @@ db.connect(dbUrl)
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
         next()
     })
+
+    app.use('/tmp', express.static(__dirname + '/tmp'))
 
     app.get('/', (req, res) => {
         res.send('not implemented yet')
@@ -236,6 +281,7 @@ db.connect(dbUrl)
             res.send({
                 token: data.token
             })
+            initiateUpdate()
         })
         .catch(err => {
             console.log(err)
@@ -268,6 +314,7 @@ db.connect(dbUrl)
             res.send({
                 message: data
             })
+            initiateUpdate()
         })
         .catch(err => {
             res.send({
@@ -301,6 +348,7 @@ db.connect(dbUrl)
             res.send({
                 name: data
             })
+            initiateUpdate()
         })
         .catch(err => {
             res.send({
@@ -316,6 +364,7 @@ db.connect(dbUrl)
         .then(data => {
             console.log(data)
             res.send(data)
+            initiateUpdate()
         })
         .catch(err => {
             res.send({

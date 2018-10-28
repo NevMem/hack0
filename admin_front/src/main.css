@@ -321,3 +321,23 @@ main {
     cursor: pointer;
     color: rgb(184, 184, 184);
 }
+
+.maxTime {
+    text-align: center;
+    font-size: 24px;
+}
+
+.qr {
+    padding: 15px 15px;
+    border-radius: 4px;
+    border-color: #7678ED;
+    background-color: #7678ED;
+    height: 30px;
+    transition: all ease-in .2s;
+    cursor: pointer;
+}
+
+.qr:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 0px 6px #7678ED;
+}

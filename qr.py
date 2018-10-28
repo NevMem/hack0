@@ -7,5 +7,7 @@ i = 0
 if len(sys.argv) > 3: 
 	i = sys.argv[3]
 
-big_code = pyqrcode.create(url + pin)
+big_code = pyqrcode.create(url + '/join?pin=' + pin)
 big_code.png('tmp/' + pin + '.png', scale = 18)
+
+print('tmp/' + pin + '.png')

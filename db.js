@@ -195,7 +195,8 @@ exports.join = (token, pin) => {
                         $addToSet: {
                             queue: {
                                 login: login,
-                                qid: data.unusedId
+                                qid: data.unusedId,
+                                creationTime: new Date()
                             }
                         }
                     }, (err, data) => {
@@ -440,5 +441,13 @@ exports.doneOne = (token, pin) => {
             console.log(data)
             resolve('ok')
         })
+    })
+}
+
+exports.isOwner = (login, pin) => {
+    return new Promise((resolve, reject) => {
+        resolve({
+            owner: true
+        }) // TODO: FIXME:
     })
 }
