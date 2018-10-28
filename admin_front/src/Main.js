@@ -22,7 +22,11 @@ export default class App extends Component {
       rooms: [], 
       roomsReady: false,
       modalVisible: false,
-      currentRoom: -1
+      currentRoom: -1,
+
+      newRoomName: undefined, 
+      renameModalVisible: false, 
+      renameinput: ''
     }
     this.state.socket.on('connect', () => {
       console.log('Connected')
@@ -245,6 +249,63 @@ export default class App extends Component {
     return seconds + ''
   }
 
+  closeRenameModal() {
+    this.setState({
+      renameModalVisible: false
+    })
+  }
+
+  rename() {
+    let newName = this.state.renameinput
+    axios.post('http://localhost/rename', {
+      token: this.state.token,
+      pin: this.state.rooms[this.state.currentRoom].pin,
+      name: newName
+    })
+  }
+
+  renderRenameModalContent() {
+    if (this.state.currentRoom < 0 || this.state.currentRoom >= this.state.rooms.length)
+      return null
+    return (
+      <div>
+        <br />
+        <h2>Current room name: {this.state.rooms[this.state.currentRoom].name}</h2>
+        <br/>
+        <h4>Enter new name:</h4>
+        <input onChange = {this.onChange.bind(this)} id = 'renameinput' value = {this.state.renameinput} className = 'textinput' type = 'text' />
+        <br />
+        <br />
+        <button onClick = {this.rename.bind(this)} className = 'btn btn-danger'>Rename</button>
+        <br />
+        <br />
+      </div>
+    )
+  }
+
+  renderRenameModalHeader() {
+    return (
+      <div className = 'row'>
+        <h2>Rename room</h2>
+        <div className = 'closeBtn' onClick = {this.closeRenameModal.bind(this)}>close</div>
+      </div>
+    )
+  }
+
+  addRoom() {
+    axios.post('http://localhost/initiate_room', {
+      token: this.state.token
+    })
+  }
+
+  initRename(index, event) {
+    event.preventDefault()
+    this.setState({
+      renameModalVisible: true, 
+      currentRoom: index
+    })
+  }
+  
   render() {
     return (
       <div className="wrapper">
@@ -252,6 +313,10 @@ export default class App extends Component {
           renderContent = {this.renderModalContent.bind(this)}
           renderHeader = {this.renderModalHeader.bind(this)}
           visible = {this.state.modalVisible} />
+        <Modal
+          renderContent = {this.renderRenameModalContent.bind(this)}
+          renderHeader = {this.renderRenameModalHeader.bind(this)}
+          visible = {this.state.renameModalVisible} />
         <header>
           <h1>Administration panel</h1>
         </header>
@@ -266,6 +331,7 @@ export default class App extends Component {
               <div className = 'profileWrapper'>
                 <div className = 'login'>{this.state.login ? this.state.login : 'Loading...'}</div>
                 <div>Amount of rooms: {this.state.roomsReady ? this.state.rooms.length : 'Loading...'}</div>
+                <div className = 'btn btn-login' onClick = {this.addRoom.bind(this)}>Create new room</div>
                 <div onClick = {this.logout.bind(this)} className = 'logout'>Logout</div>
               </div>
             </div>
@@ -308,9 +374,9 @@ export default class App extends Component {
                   }
                   
                   return (
-                    <div onClick = {this.roomClicked.bind(this, index)} key = {index} className = {roomClasses}>
-                      <div className = 'roomName'>{el.name}</div>
-                      <div className = 'roomInfo'>
+                    <div key = {index} className = {roomClasses}>
+                      <div onClick = {this.initRename.bind(this, index)} className = 'roomName'>{el.name}</div>
+                      <div onClick = {this.roomClicked.bind(this, index)} className = 'roomInfo'>
                         <div className = 'roomLoad'>{currentLoad}</div>
                         <div className = 'maxTime'>{waiting > 0 ? 'Max Time: ' + this.formatDuration(waiting) : ''}</div>
                         <div className = 'avgTime'>{averageTime > 0 ? 'Avr Time: ' + this.formatDuration(averageTime) : ''}</div>

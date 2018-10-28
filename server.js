@@ -252,6 +252,7 @@ db.connect(dbUrl)
         .then(data => {
             console.log(data)
             res.send({ pin: data })
+            initiateUpdate()
         })
         .catch(err => {
             res.send({

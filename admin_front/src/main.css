@@ -51,7 +51,7 @@ footer {
     line-height: 40px;
 }
 
-.login-form input {
+.login-form input, .textinput {
     line-height: 30px;
     font-size: 22px;
     outline: none;
@@ -345,4 +345,19 @@ main {
 .avgTime {
     text-align: center;
     font-size: 24px;
+}
+
+.textinput {
+    border: none;
+}
+
+.btn-danger {
+    background-color: #F18701;
+    color: black;
+    border: 1px solid #F18701;
+}
+
+.btn-danger:hover {
+    background-color: transparent;
+    color: #F18701;
 }
