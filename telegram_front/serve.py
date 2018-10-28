@@ -1,3 +1,4 @@
+
 import requests
 import json
 
@@ -77,6 +78,8 @@ def getname(data):
     return response
 
 def main():
+    custom_keyboard = json.dumps({"keyboard":[["Position","Leave"]],"one_time_keyboard":True})
+
     global bot_url
     with open('bot_info.json', 'r') as f:
         data = json.load(f)
@@ -105,7 +108,7 @@ def main():
                 message_text = ""
                 try:
                     response = join({'pin' : command['args']})
-                    if ('token' in response.keys()):
+                    if ('token' in response.keys() and (uid not in pindb.keys() or pindb[uid] != command['args'])):
                         message_text = "Successfully joined room #" + command['args'] + ' (<b>' + getname({'pin' : command['args']})['name'] + '</b>)' #\nToken:' + response['token']
                         tokensdb[uid] = response['token']
                         pindb[uid] = command['args']
@@ -113,7 +116,7 @@ def main():
                         message_text = "Failed! an error occured\n" + response['err']
                 except Exception as e:
                     message_text = "Failed! an error occured\n" + str(e)
-                send_mess(uid, message_text, {'reply_markup' : '{"keyboard":[["Position","Leave"]]}'})
+                send_mess(uid, message_text, {'reply_markup' : custom_keyboard})
             elif (command['command'] == 'Position'):
                 message_text = ""
                 if (uid not in tokensdb.keys()):
@@ -127,7 +130,7 @@ def main():
                             message_text = "Failed! an error occured\n" + response['err']
                     except Exception as e:
                         message_text = "Failed! an error occured\n" + str(e)
-                send_mess(uid, message_text, {'reply_markup' : '{"keyboard":[["Position","Leave"]]  }'})
+                send_mess(uid, message_text, {'reply_markup' : custom_keyboard})
             elif (command['command'] == 'Leave'):
                 message_text = ""
                 if (uid in tokensdb.keys()):
@@ -143,7 +146,7 @@ def main():
                 else:
                     message_text = "You have not joind any room yet"
                 if (uid in pindb.keys()):
-                    send_mess(uid, message_text, {'reply_markup' : '{"keyboard":[["Position","Leave"]]}'})
+                    send_mess(uid, message_text, {'reply_markup' : custom_keyboard})
                 else:
                     send_mess(uid, message_text)
             # elif (command['command'] == '/authorize'):
