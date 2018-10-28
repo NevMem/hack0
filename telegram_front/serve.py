@@ -33,6 +33,7 @@ def send_mess(chat, text, add_args = dict()):
     for i in add_args.keys():
         params[i] = add_args[i]
     response = requests.post(bot_url + 'sendMessage', data=params)
+    print(response, params)
     return response
 
 def get_command(text):
@@ -120,12 +121,23 @@ def main():
             elif (command['command'] == 'Position'):
                 message_text = ""
                 if (uid not in tokensdb.keys()):
-                    message_text = "You have not joind any room yet"
+                    message_text = "You have not joined any room yet"
                 else:
                     try:
                         response = myposition({'token' : tokensdb[uid], 'pin' : pindb[uid]})
                         if ('position' in response.keys()):
-                            message_text = "There are " + str(response['position'] - 1) + " people before you"
+                            people_left = (response['position'] - 1)
+                            message_text = "There are " + str(max(0, people_left)) + " people before you\n"
+                            if (people_left == 0):
+                                message_text += "It's your turn"
+                            elif (people_left == 1):
+                                message_text += "You are the next"
+                            else:
+                                message_text = "[<b>" + str(response['serving']) + "</b>] --- Current user\n";
+                                message_text += " " + str(response['next']) + "\n"
+                                if (people_left > 2):
+                                    message_text += ".\n(" + str(people_left - 2) + ") more people\n.\n"
+                                message_text += " <b>" + str(response['qid']) + "</b> --- You"
                         else:
                             message_text = "Failed! an error occured\n" + response['err']
                     except Exception as e:
@@ -144,7 +156,7 @@ def main():
                     except Exception as e:
                         message_text = "Failed! an error occured\n" + str(e)
                 else:
-                    message_text = "You have not joind any room yet"
+                    message_text = "You have not joined any room yet"
                 if (uid in pindb.keys()):
                     send_mess(uid, message_text, {'reply_markup' : custom_keyboard})
                 else:
@@ -167,7 +179,7 @@ def main():
             # elif (command['command'] == '/newroom'):
             #     message_text = ""
             #     if (uid not in tokensdb.keys()):
-            #         message_text = "You have not joind any room or authorized yet"
+            #         message_text = "You have not joined any room or authorized yet"
             #     else:
             #         try:
             #             response = initiate_room(tokensdb[uid])
