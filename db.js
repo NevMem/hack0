@@ -136,7 +136,9 @@ exports.getOwnedRooms = (token) => {
                     projection: {
                         name: 1,
                         pin: 1,
-                        queue: 1
+                        queue: 1,
+                        served: 1,
+                        sumDelay: 1
                     }
                 }).toArray((err, data) => {
                     if (err) {
@@ -425,21 +427,53 @@ exports.doneOne = (token, pin) => {
             return
         }
         db.collection('rooms')
-        .updateOne({
+        .findOne({
             pin: pin,
             login: decoded.login
-        }, {
-            $pop: {
-                queue: -1
-            }
         }, (err, data) => {
             if (err) {
                 console.log(err)
                 reject('Error occured')
                 return
             }
-            console.log(data)
-            resolve('ok')
+            if (!data) {
+                reject('Room not found')
+                return
+            }
+            if (data.queue && data.queue.length >= 1) {
+                let delay = new Date().getTime() - new Date(data.queue[0].creationTime)
+                delay = delay / 1000 | 0
+                db.collection('rooms')
+                .updateOne({
+                    pin: pin
+                }, {
+                    $inc: {
+                        sumDelay: delay, 
+                        served: 1
+                    } 
+                }, (err, data) => {
+                    if (err) {
+                        console.log(err)
+                        return
+                    }
+                })
+            }
+            db.collection('rooms')
+            .updateOne({
+                pin: pin,
+                login: decoded.login
+            }, {
+                $pop: {
+                    queue: -1
+                }
+            }, (err, data) => {
+                if (err) {
+                    console.log(err)
+                    reject('Error occured')
+                    return
+                }
+                resolve('ok')
+            })
         })
     })
 }

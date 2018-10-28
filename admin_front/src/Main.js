@@ -173,15 +173,23 @@ export default class App extends Component {
       if (current.queue.length >= 2)
         next = current.queue[1]
     }
+    let averageTime = undefined
+    if (current.served) {
+      averageTime = (current.sumDelay / current.served * 1 | 0) / 1.
+    }
+    console.log(current)
     return (
       <div className = 'modalContentTwoParts'>
         <div className = 'queueInfo'>
           <div>
             <h2>{name} <span onClick = {this.deleteRoom.bind(this)} className = 'deleteRoom'>delete</span></h2>
             <h3>Now in queue: {load}</h3>
+            <h3>Pin: {current.pin}</h3>
             <br/>
             <h2>{serving ? 'Serving: ' + serving.login : ''}</h2>
             <h2>{next ? 'Next: ' + next.login : ''}</h2>
+            <h2>Served total: {current.served >= 0 ? current.served : 0}</h2>
+            <h2>Average wait time: {current.served >= 0 ? averageTime : '-/-'}</h2>
           </div>
           <div className = 'centerit'>
             <div className = 'btn btn-done' onClick = {this.doneOne.bind(this)}>Done</div>
@@ -293,6 +301,11 @@ export default class App extends Component {
                     waiting = new Date().getTime() - new Date(el.queue[0].creationTime).getTime()
                     waiting = waiting / 1000 | 0
                   }
+
+                  let averageTime = undefined
+                  if (el.served) {
+                    averageTime = (el.sumDelay / el.served * 1 | 0) / 1.
+                  }
                   
                   return (
                     <div onClick = {this.roomClicked.bind(this, index)} key = {index} className = {roomClasses}>
@@ -300,6 +313,7 @@ export default class App extends Component {
                       <div className = 'roomInfo'>
                         <div className = 'roomLoad'>{currentLoad}</div>
                         <div className = 'maxTime'>{waiting > 0 ? 'Max Time: ' + this.formatDuration(waiting) : ''}</div>
+                        <div className = 'avgTime'>{averageTime > 0 ? 'Avr Time: ' + this.formatDuration(averageTime) : ''}</div>
                       </div>
                     </div>
                   )
